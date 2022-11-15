@@ -62,6 +62,7 @@ server.post("/sign-up", async (req, res) => {
       .insertOne({ ...user, password: bcrypt.hashSync(user.password, 10) });
     res.status(201).send({ message: "registration done!" });
   } catch (err) {
+    console.log(err);
     res.sendStatus(500);
   }
 });
@@ -87,6 +88,7 @@ server.post("/sign-in", async (req, res) => {
       return res.status(404).send({ message: "email/password invalid!" });
     }
   } catch (err) {
+    console.log(err);
     res.sendStatus(500);
   }
 });
@@ -121,9 +123,32 @@ server.post("/history", async (req, res) => {
     });
     res.status(201).send({ message: "Your history has been updated!" });
   } catch (err) {
+    console.log(err);
     res.sendStatus(500);
   }
 });
+
+server.get("/history", async (req, res) => {
+  const { authorization } = req.headers;
+  const token = authorization?.replace("Bearer ", "");
+  if (!token) {
+    return res
+      .status(401)
+      .send({ message: "token is required! (format: Bearer token)" });
+  }
+
+  try {
+    const session = await db.collection("sessions").findOne({ token });
+    if (!session) {
+      return res.status(401).send({ message: "Invalid token!" });
+    }
+    const userHistory = await db.collection("history").find({userId: session.userId}).toArray();
+    res.status(200).send(userHistory);
+  } catch (err) {
+    console.log(err);
+    res.sendStatus(500);
+  }
+})
 
 server.listen(5000, () => {
   console.log("Running in http://localhost:5000");
