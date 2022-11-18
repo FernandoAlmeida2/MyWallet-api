@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "npx nodemon src/index"
+    "dev": "npx nodemon src/index",
+    "start": "node src/index"
   },
   "keywords": [],
   "author": "",
