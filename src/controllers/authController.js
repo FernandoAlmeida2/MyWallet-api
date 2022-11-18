@@ -5,12 +5,6 @@ import bcrypt from "bcrypt";
 export async function signUp(req, res) {
   const user = req.body;
   try {
-    const userExists = await usersCollection.findOne({
-      $or: [{ name: user.name }, { email: user.email }],
-    });
-    if (userExists) {
-      return res.status(409).send({ message: "This user already exists!" });
-    }
     delete user.repeat_password;
     await usersCollection.insertOne({
       ...user,
@@ -25,10 +19,16 @@ export async function signUp(req, res) {
 
 export async function signIn(req, res) {
   const { email, password } = req.body;
+  let token;
   try {
     const user = await usersCollection.findOne({ email });
     if (user && bcrypt.compareSync(password, user.password)) {
-      const token = uuidv4();
+      const sessionExists = await sessionsCollection.findOne({userId: user._id});
+      if(!sessionExists){
+        token = uuidv4();
+      } else{
+        token = sessionExists.token;
+      }
       await sessionsCollection.insertOne({
         userId: user._id,
         token,

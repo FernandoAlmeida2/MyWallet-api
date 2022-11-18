@@ -1,7 +1,8 @@
-import { historyCollection, sessionsCollection } from "../index.js";
+import { historyCollection } from "../index.js";
 import dayjs from "dayjs";
 
 export async function postHistory(req, res) {
+  const session = req.session;
   try {
     await historyCollection.insertOne({
       ...req.body,
@@ -17,11 +18,9 @@ export async function postHistory(req, res) {
 
 export async function getHistory(req, res) {
   try {
-    const { authorization } = req.headers;
-    const token = authorization.replace("Bearer ", "");
-    const session = await sessionsCollection.findOne({ token });
+    const session = req.session;
     const userHistory = await historyCollection
-      .find({ userId: session.userId })
+      .find({ userId: session.userId }  )
       .toArray();
     res.status(200).send(userHistory);
   } catch (err) {

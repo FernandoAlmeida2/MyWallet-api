@@ -1,4 +1,4 @@
-import { loginSchema } from "../index.js";
+import { loginSchema } from "../models/users.models.js";
 
 export function loginValidation(req, res, next) {
   const validation = loginSchema.validate(req.body, { abortEarly: false });

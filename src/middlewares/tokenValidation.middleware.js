@@ -13,6 +13,7 @@ export async function tokenValidation(req, res, next){
     if (!session) {
       return res.status(401).send({ message: "Invalid token!" });
     }
+    req.session = session;
   } catch (err) {
     console.log(err);
     res.sendStatus(500);

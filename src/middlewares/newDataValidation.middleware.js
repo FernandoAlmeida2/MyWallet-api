@@ -1,4 +1,4 @@
-import { historySchema } from "../index.js";
+import { historySchema } from "../models/history.models.js";
 
 export function newDataValidation(req, res, next) {
   const validation = historySchema.validate(req.body, { abortEarly: false });
