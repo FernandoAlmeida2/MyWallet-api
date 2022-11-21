@@ -24,7 +24,8 @@ try {
 export const usersCollection = db.collection("users");
 export const sessionsCollection = db.collection("sessions");
 export const historyCollection = db.collection("history");
+const port = process.env.PORT || 5000;
 
-server.listen(5000, () => {
-  console.log("Running in http://localhost:5000");
+server.listen(port, () => {
+  console.log(`Running in http://localhost: ${port}`);
 });
